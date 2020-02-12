@@ -1,0 +1,9 @@
+C:\Users\allan.effting\source\repos\PackageGenerator\PackageGenerator\bin\Release\PackageGenerator.exe.config
+C:\Users\allan.effting\source\repos\PackageGenerator\PackageGenerator\bin\Release\PackageGenerator.exe
+C:\Users\allan.effting\source\repos\PackageGenerator\PackageGenerator\bin\Release\PackageGenerator.pdb
+C:\Users\allan.effting\source\repos\PackageGenerator\PackageGenerator\obj\Release\PackageGenerator.csprojAssemblyReference.cache
+C:\Users\allan.effting\source\repos\PackageGenerator\PackageGenerator\obj\Release\PackageGenerator.Home.resources
+C:\Users\allan.effting\source\repos\PackageGenerator\PackageGenerator\obj\Release\PackageGenerator.Properties.Resources.resources
+C:\Users\allan.effting\source\repos\PackageGenerator\PackageGenerator\obj\Release\PackageGenerator.csproj.GenerateResource.cache
+C:\Users\allan.effting\source\repos\PackageGenerator\PackageGenerator\obj\Release\PackageGenerator.exe
+C:\Users\allan.effting\source\repos\PackageGenerator\PackageGenerator\obj\Release\PackageGenerator.pdb

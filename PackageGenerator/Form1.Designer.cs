@@ -15,8 +15,7 @@
         {
             if (disposing && (components != null))
             {
-                components.Dispose();
-            }
+                components.Dispose();            }
             base.Dispose(disposing);
         }
 
@@ -28,7 +27,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TextBox textBox3;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Home));
             this.label1 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
@@ -51,17 +49,10 @@
             this.button2 = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.button3 = new System.Windows.Forms.Button();
-            textBox3 = new System.Windows.Forms.TextBox();
+            this.textBox3 = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // textBox3
-            // 
-            textBox3.Location = new System.Drawing.Point(9, 79);
-            textBox3.Name = "textBox3";
-            textBox3.Size = new System.Drawing.Size(100, 20);
-            textBox3.TabIndex = 15;
             // 
             // label1
             // 
@@ -79,6 +70,7 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(139, 20);
             this.textBox1.TabIndex = 1;
+            this.textBox1.TextChanged += new System.EventHandler(this.txtNumChamado);
             // 
             // label2
             // 
@@ -95,15 +87,18 @@
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(40, 20);
             this.textBox2.TabIndex = 3;
+            this.textBox2.TextChanged += new System.EventHandler(this.txtVersao);
             // 
             // listView1
             // 
+            this.listView1.Cursor = System.Windows.Forms.Cursors.Default;
             this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(15, 69);
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(479, 280);
-            this.listView1.TabIndex = 4;
+            this.listView1.TabIndex = 5;
             this.listView1.UseCompatibleStateImageBehavior = false;
+            this.listView1.View = System.Windows.Forms.View.List;
             this.listView1.SelectedIndexChanged += new System.EventHandler(this.lvArquivos);
             // 
             // button1
@@ -144,6 +139,7 @@
             this.radioButton1.TabStop = true;
             this.radioButton1.Text = "LF";
             this.radioButton1.UseVisualStyleBackColor = true;
+            this.radioButton1.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
             // 
             // radioButton2
             // 
@@ -155,6 +151,7 @@
             this.radioButton2.TabStop = true;
             this.radioButton2.Text = "NFE";
             this.radioButton2.UseVisualStyleBackColor = true;
+            this.radioButton2.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
             // 
             // checkBox1
             // 
@@ -210,22 +207,28 @@
             this.textBox4.Name = "textBox4";
             this.textBox4.Size = new System.Drawing.Size(100, 20);
             this.textBox4.TabIndex = 16;
+            this.textBox4.TextChanged += new System.EventHandler(this.textBox4_TextChanged);
             // 
             // comboBox1
             // 
             this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "EQA9",
+            "SATA"});
             this.comboBox1.Location = new System.Drawing.Point(9, 39);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(100, 21);
             this.comboBox1.TabIndex = 17;
+            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
             // groupBox1
             // 
+            this.groupBox1.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.groupBox1.Controls.Add(this.textBox3);
             this.groupBox1.Controls.Add(this.button2);
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.comboBox1);
             this.groupBox1.Controls.Add(this.label6);
-            this.groupBox1.Controls.Add(textBox3);
             this.groupBox1.Controls.Add(this.textBox4);
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Location = new System.Drawing.Point(503, 251);
@@ -248,6 +251,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.groupBox2.Controls.Add(this.button3);
             this.groupBox2.Controls.Add(this.radioButton2);
             this.groupBox2.Controls.Add(this.label3);
@@ -271,10 +275,20 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.btnCriarPacote);
             // 
-            // Form1
+            // textBox3
+            // 
+            this.textBox3.Location = new System.Drawing.Point(9, 79);
+            this.textBox3.Name = "textBox3";
+            this.textBox3.Size = new System.Drawing.Size(100, 20);
+            this.textBox3.TabIndex = 19;
+            this.textBox3.TextChanged += new System.EventHandler(this.textBox3_TextChanged);
+            // 
+            // Home
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.BackgroundImage = global::PackageGenerator.Properties.Resources._2670728a012ecde7123139171260;
             this.ClientSize = new System.Drawing.Size(669, 450);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -285,7 +299,7 @@
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.label1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "Form1";
+            this.Name = "Home";
             this.Text = "Gerador de Pacotes";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.groupBox1.ResumeLayout(false);
@@ -320,6 +334,7 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.TextBox textBox3;
     }
 }
 

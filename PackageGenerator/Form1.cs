@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -15,9 +16,24 @@ namespace PackageGenerator
     {
         public List<string> resultArquivos = new List<string>();
         public List<string> resultName = new List<string>();
+        public string numChamado;
+        private string versao;
+        public string bancoDeDados;
+        public string login;
+        public string senha;
+
         public Home()
         {
             InitializeComponent();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            button2.Enabled = false;
+        }
+
+        private void txtNumChamado(object sender, EventArgs e)
+        {
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -30,10 +46,7 @@ namespace PackageGenerator
 
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
+       
 
         private void btnSelArquivos(object sender, EventArgs e)
         {
@@ -85,27 +98,76 @@ namespace PackageGenerator
 
         private void btnCriarPacote(object sender, EventArgs e)
         {
-         
+
             try
             {
                 LeitorDeAquivosService arq = new LeitorDeAquivosService();
-                arq.LeitorDeAquivosServicec(resultName);
+
+                if (radioButton1.Checked)
+                {
+                    arq.SelectDiretorio("LF");
+                }
+                if (radioButton2.Checked)
+                {
+                    arq.SelectDiretorio("NFE");
+                }
                 arq.CopyArquivosSatiPacotes(resultArquivos);
+                numChamado = textBox1.Text;
+                arq.ExecuteArqBat(numChamado);
+                versao = textBox2.Text;
+                arq.CreateVersaoPacote(versao);
+                arq.AlterArqChamadoVersao();
+                arq.AlterFirstLineArqChamadoVersao();
+                arq.MoveArquivosPastaChamado(resultArquivos);
+                arq.CopyArquivosNFEouSATI();
+                //arq.DeleteArquivos(resultArquivos);
+                MessageBox.Show("Pacote Criado com Sucesso!");
+                button2.Enabled = true;
             }
             catch (Exception ex)
             {
-
-                MessageBox.Show("Não é possivel ler o arquivo");
                 MessageBox.Show(ex.Message);
             }
-            
+
 
         }
 
+ 
 
-        private void btnGerarLog(object sender, EventArgs e)
+        protected void btnGerarLog(object sender, EventArgs e)
         {
-          
+            
+            LeitorDeAquivosService arquivo = new LeitorDeAquivosService();
+            bancoDeDados = comboBox1.Text;
+            login = textBox3.Text;
+            senha = textBox4.Text;
+            if (bancoDeDados != "" && login != ""  && senha != "")
+            {
+                try
+                {
+                    using (MyFormBase myFormBase = new MyFormBase())
+                    {
+                        myFormBase.Show();
+                        arquivo.GerarArquivoLog(bancoDeDados, login, senha);
+                        myFormBase.Close();
+                    }
+                    MessageBox.Show("Log Gerado com Sucesso!");
+
+
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show("Erro ao gerar o Log, " + ex.Message);
+                }
+            }
+
+            else
+            {
+                MessageBox.Show("Todos os campos devem ser preenchidos!");    
+            }
+            
+           
         }
 
         public void lvArquivos(object sender, EventArgs e)
@@ -113,6 +175,38 @@ namespace PackageGenerator
 
         }
 
-        
+        private void txtVersao(object sender, EventArgs e)
+        {
+
+        }
+
+        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void textBox4_TextChanged(object sender, EventArgs e)
+        {
+            textBox4.PasswordChar = '\u25CF';
+            if (Control.IsKeyLocked(Keys.CapsLock))
+            {
+                MessageBox.Show("The Caps Lock key is ON.");
+            }
+        }
+
+        private void textBox3_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
