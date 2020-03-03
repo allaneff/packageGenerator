@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 namespace PackageGenerator
 {
-    public partial class Home : Form
+    public partial class Form1 : Form
     {
         public List<string> resultArquivos = new List<string>();
         public List<string> resultName = new List<string>();
@@ -21,8 +21,9 @@ namespace PackageGenerator
         public string bancoDeDados;
         public string login;
         public string senha;
+        LeitorDeAquivosService arq = new LeitorDeAquivosService();
 
-        public Home()
+        public Form1()
         {
             InitializeComponent();
         }
@@ -30,10 +31,16 @@ namespace PackageGenerator
         private void Form1_Load(object sender, EventArgs e)
         {
             button2.Enabled = false;
+            CriandoLog.Visible = false;
         }
 
         private void txtNumChamado(object sender, EventArgs e)
         {
+            if (System.Text.RegularExpressions.Regex.IsMatch(textBox1.Text, "[^0-9]"))
+            {
+                MessageBox.Show("Esse campo deve conter apenas números!");
+                textBox1.Text = textBox1.Text.Remove(textBox1.Text.Length - 1);
+            }
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -46,7 +53,7 @@ namespace PackageGenerator
 
         }
 
-       
+
 
         private void btnSelArquivos(object sender, EventArgs e)
         {
@@ -101,7 +108,7 @@ namespace PackageGenerator
 
             try
             {
-                LeitorDeAquivosService arq = new LeitorDeAquivosService();
+
 
                 if (radioButton1.Checked)
                 {
@@ -115,45 +122,71 @@ namespace PackageGenerator
                 numChamado = textBox1.Text;
                 arq.ExecuteArqBat(numChamado);
                 versao = textBox2.Text;
-                arq.CreateVersaoPacote(versao);
+
+           
+                if (radioButton4.Checked)
+                {
+                    arq.CreateVersaoPacoteLinux(versao);
+                }
+                else
+                {
+                    arq.CreateVersaoPacote(versao);
+                }
                 arq.AlterArqChamadoVersao();
                 arq.AlterFirstLineArqChamadoVersao();
-                arq.MoveArquivosPastaChamado(resultArquivos);
-                arq.CopyArquivosNFEouSATI();
-                //arq.DeleteArquivos(resultArquivos);
+                //arq.MoveArquivosPastaChamado(resultArquivos);
+                arq.MoveArquivosNFEouSATI();
                 MessageBox.Show("Pacote Criado com Sucesso!");
+                MessageBox.Show("Para Concluir o Processo, Gerar o Log!");
+                button3.Enabled = false;
+                button1.Enabled = false;
                 button2.Enabled = true;
+            
+
             }
             catch (Exception ex)
             {
+                arq.DeletaArquivos(resultArquivos);
+                listView1.Clear();
                 MessageBox.Show(ex.Message);
             }
 
 
         }
 
- 
+
 
         protected void btnGerarLog(object sender, EventArgs e)
         {
-            
-            LeitorDeAquivosService arquivo = new LeitorDeAquivosService();
+
+
             bancoDeDados = comboBox1.Text;
             login = textBox3.Text;
             senha = textBox4.Text;
-            if (bancoDeDados != "" && login != ""  && senha != "")
+            if (bancoDeDados != "" && login != "" && senha != "")
             {
                 try
                 {
-                    using (MyFormBase myFormBase = new MyFormBase())
+                    //using (MyFormBase myFormBase = new MyFormBase())
+                    //{
+                    //    myFormBase.Show();
+                    //    arq.GerarArquivoLog(bancoDeDados, login, senha);
+                    //    myFormBase.Close();
+                    //}
+                    CriandoLog.Visible = true;
+                    arq.GerarArquivoLog(bancoDeDados, login, senha);
+                    CriandoLog.Visible = false;
+                    
+                    arq.RetornarArquivosPacote();
+              
+                    if (radioButton4.Checked)
                     {
-                        myFormBase.Show();
-                        arquivo.GerarArquivoLog(bancoDeDados, login, senha);
-                        myFormBase.Close();
+                        arq.AlterLinux();
                     }
                     MessageBox.Show("Log Gerado com Sucesso!");
-
-
+                    Form1 NewForm = new Form1();
+                    NewForm.Show();
+                    this.Dispose(false);
                 }
                 catch (Exception ex)
                 {
@@ -164,10 +197,10 @@ namespace PackageGenerator
 
             else
             {
-                MessageBox.Show("Todos os campos devem ser preenchidos!");    
+                MessageBox.Show("Todos os campos devem ser preenchidos!");
             }
-            
-           
+
+
         }
 
         public void lvArquivos(object sender, EventArgs e)
@@ -177,7 +210,11 @@ namespace PackageGenerator
 
         private void txtVersao(object sender, EventArgs e)
         {
-
+            if (System.Text.RegularExpressions.Regex.IsMatch(textBox2.Text, "[^0-9]"))
+            {
+                MessageBox.Show("Esse campo deve conter apenas números!");
+                textBox2.Text = textBox2.Text.Remove(textBox2.Text.Length - 1);
+            }
         }
 
         private void radioButton2_CheckedChanged(object sender, EventArgs e)
@@ -192,7 +229,7 @@ namespace PackageGenerator
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            
+
         }
 
         private void textBox4_TextChanged(object sender, EventArgs e)
@@ -205,6 +242,26 @@ namespace PackageGenerator
         }
 
         private void textBox3_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void radioButton4_CheckedChanged(object sender, EventArgs e)
+        {
+           
+        }
+
+        private void groupBox3_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void radioButton3_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void criandoLog(object sender, EventArgs e)
         {
 
         }

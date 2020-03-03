@@ -59,21 +59,38 @@ namespace PackageGenerator
             }
         }
 
+        public void DeletaArquivos(List<string> resultPath)
+        {
+            foreach (var strArquivo in resultPath)
+            {
+                FileName = strArquivo.Split('\\').Last();
+                File.Delete(@Diretorio + FileName);
+            }
+        }
+
 
         public void ExecuteArqBat(string numChamado)
         {
-            NumChamado = numChamado;
-            ProcessStartInfo processStartInfo = new ProcessStartInfo("cmd.exe");
-            processStartInfo.RedirectStandardInput = true;
-            processStartInfo.RedirectStandardOutput = true;
-            processStartInfo.UseShellExecute = false;
-            Process process = Process.Start(processStartInfo);
-            process.StandardInput.WriteLine(@"cd " + Diretorio);
-            process.StandardInput.WriteLine(@"chamado.bat " + numChamado);
-            process.StandardInput.WriteLine(@"exit");
-            process.WaitForExit();
-            process.Dispose();
-            process.Close();
+            if (FileName.Contains(numChamado))
+            {
+                NumChamado = numChamado;
+                ProcessStartInfo processStartInfo = new ProcessStartInfo("cmd.exe");
+                processStartInfo.RedirectStandardInput = true;
+                processStartInfo.RedirectStandardOutput = true;
+                processStartInfo.UseShellExecute = false;
+                Process process = Process.Start(processStartInfo);
+                process.StandardInput.WriteLine(@"cd " + Diretorio);
+                process.StandardInput.WriteLine(@"chamado.bat " + numChamado);
+                process.StandardInput.WriteLine(@"exit");
+                process.WaitForExit();
+                process.Dispose();
+                process.Close();
+            }
+            else
+            {
+                throw new Exception("O nome do arquivo deve conter o número do chamado!");
+                
+            }
 
         }
 
@@ -92,12 +109,28 @@ namespace PackageGenerator
                 throw new Exception("Não foi possível alterar o nome do diretório!");
             }
         }
+        public void CreateVersaoPacoteLinux(string versao)
+        {
+            CaminhoDiretorio = String.Concat(@Diretorio, "Chamado_", NumChamado);
+            Versao = String.Concat("_V", versao);
+            NovoNomePasta = String.Concat(@Diretorio, "Chamado_", NumChamado, Versao, "_Lx");
+            try
+            {
+                Directory.Move(@CaminhoDiretorio, @NovoNomePasta);
+            }
+            catch (Exception)
+            {
+
+                throw new Exception("Não foi possível alterar o nome do diretório!");
+            }
+        }
 
         //Alterar a Vesao do pacote no nome do arquivo e também na sua primeira linha
         public void AlterArqChamadoVersao()
         {
-            string caminhoArquivo = String.Concat(CaminhoDiretorio, Versao, "\\Chamado_", NumChamado, ".sql");
-            NovoNomeAquivo = String.Concat(CaminhoDiretorio, Versao, "\\Chamado_", NumChamado, Versao, ".sql");
+            //string caminhoArquivo = String.Concat(CaminhoDiretorio, Versao, "\\Chamado_", NumChamado, ".sql");
+            string caminhoArquivo = String.Concat(NovoNomePasta, "\\Chamado_", NumChamado, ".sql");
+            NovoNomeAquivo = String.Concat(NovoNomePasta, "\\Chamado_", NumChamado, Versao, ".sql");
             try
             {
                 File.Move(@caminhoArquivo, @NovoNomeAquivo);
@@ -109,6 +142,7 @@ namespace PackageGenerator
                 throw new Exception("Não foi possível alterar o nome do arquivo!");
             }
         }
+
 
         private string CaminhoGerarLog
         {
@@ -128,7 +162,7 @@ namespace PackageGenerator
             try
             {
                 var allLines = File.ReadAllLines(NovoNomeAquivo);
-                allLines[0] = "spool c:\\"+ DiretorioFirstLine +"\\log_Chamado_" + NumChamado + Versao + ".txt";
+                allLines[0] = "spool c:\\" + DiretorioFirstLine + "\\log_Chamado_" + NumChamado + Versao + ".txt";
                 File.WriteAllLines(NovoNomeAquivo, allLines);
             }
             catch (Exception e)
@@ -138,6 +172,30 @@ namespace PackageGenerator
             }
         }
 
+
+        public void AlterLinux()
+        {
+            StreamReader sr = new StreamReader(NovoNomeAquivo);
+            StringBuilder sb = new StringBuilder();
+
+            while (!sr.EndOfStream)
+            {
+                string s = sr.ReadLine();
+                if (s.IndexOf( @"\sati\") > -1)
+                {
+                    s = s.Replace(@"\sati\", @"/tmp/");
+                }
+                sb.AppendLine(s);
+            }
+            sr.Close();
+
+            StreamWriter sw = new StreamWriter(NovoNomeAquivo);
+            sw.Write(sb);
+
+            sw.Close();
+
+        }
+
         public void MoveArquivosPastaChamado(List<string> resultPath)
         {
 
@@ -145,31 +203,22 @@ namespace PackageGenerator
             {
                 FileName = strArquivo.Split('\\').Last();
                 //fileNameSplitted.= FileName; 
-                File.Move(Diretorio + FileName, NovoNomePasta + "\\"+ FileName);
+                File.Move(Diretorio + FileName, NovoNomePasta + "\\" + FileName);
             }
         }
 
-        public void CopyArquivosNFEouSATI()
+        public void MoveArquivosNFEouSATI()
         {
-                DirectoryInfo dir = new DirectoryInfo(CaminhoDiretorio + Versao  );
-                string destino = DiretorioLog;
+            DirectoryInfo dir = new DirectoryInfo(NovoNomePasta);
+            string destino = DiretorioLog;
 
-                foreach (FileInfo f in dir.GetFiles("*.sql"))
-                {
-                    File.Move(f.FullName, @destino + f.Name);
-                }   
-        }
-
-        public void DeleteArquivos(List<string> resultPath) 
-        {
-            foreach (var item in resultPath)
+            foreach (FileInfo f in dir.GetFiles("*.sql"))
             {
-                FileName = item.Split('\\').Last();
-                File.Delete(@Diretorio + FileName);
+                File.Move(f.FullName, @destino + f.Name);
             }
-            
         }
-            
+
+
 
         public void GerarArquivoLog(string bancoDeDados, string login, string senha)
         {
@@ -190,10 +239,25 @@ namespace PackageGenerator
                 process.StandardInput.WriteLine("quit");
                 process.StandardInput.WriteLine("exit");
                 process.WaitForExit(20000);
-                
+
+
             };
-           
+
         }
+
+        public void RetornarArquivosPacote()
+        {
+            DirectoryInfo dir = new DirectoryInfo(DiretorioLog);
+            string destino = NovoNomePasta + "\\";
+
+            foreach (FileInfo f in dir.GetFiles())
+            {
+                File.Move(f.FullName, @destino + f.Name);
+            }
+
+        }
+    
+        
     }
 }
 

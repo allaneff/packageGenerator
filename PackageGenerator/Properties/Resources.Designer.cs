@@ -63,19 +63,9 @@ namespace PackageGenerator.Properties {
         /// <summary>
         ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap _2670728a012ecde7123139171260 {
+        internal static System.Drawing.Bitmap backgroundHome4 {
             get {
-                object obj = ResourceManager.GetObject("2670728a012ecde7123139171260", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap _MG_4741 {
-            get {
-                object obj = ResourceManager.GetObject("_MG_4741", resourceCulture);
+                object obj = ResourceManager.GetObject("backgroundHome4", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
